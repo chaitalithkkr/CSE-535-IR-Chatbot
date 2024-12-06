@@ -132,6 +132,13 @@
             border-radius: 10px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
+
+        .end-chat-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -188,7 +195,13 @@
             </label><br>
             <label>
                 <input type="checkbox" name="topic" value="Food"> Food
-            </label>
+            </label><br>
+        </div>
+
+        <!-- End Chat and Go to Visualizations Buttons -->
+        <div class="end-chat-container">
+            <button class="btn btn-danger" onclick="endChat()">End Chat</button>
+            <button class="btn btn-success" onclick="goToVisualizations()">Go to Visualizations</button>
         </div>
     </div>
 
@@ -204,8 +217,7 @@
             Sports: 'url("https://img.freepik.com/free-photo/sports-tools_53876-138077.jpg?t=st=1733512954~exp=1733516554~hmac=551ca13a68136027e41e121d39c57c9dbd7442e81983214acc817ee6b1283ae5&w=996")',
             Education: 'url("https://img.freepik.com/free-photo/top-view-books-with-copy-space_23-2148827187.jpg?t=st=1733512987~exp=1733516587~hmac=289d7c4c4eb6769dcdd82d46de2d12a1183fc2d20b30258ff3af209f0db9ab06&w=1060")',
             Travel: 'url("https://img.freepik.com/free-photo/composition-small-airplanes-bus-passport-map_23-2148169874.jpg?t=st=1733513023~exp=1733516623~hmac=34ba08e23f8440779a1d1282cbb7b0a0bc56b1c050f2929ed614ddf04361eed7&w=996")',
-            Food: 'url("https://img.freepik.com/free-photo/copy-space-italian-food-ingredients_23-2148551732.jpg?t=st=1733512492~exp=1733516092~hmac=74cdf3fc86d27cebee8ac11deb1c18163928c3e5028419b4356e620d04ba5440&w=1380")' };
-
+            Food: 'url("https://img.freepik.com/free-photo/copy-space-italian-food-ingredients_23-2148551732.jpg?t=st=1733512492~exp=1733516092~hmac=74cdf3fc86d27cebee8ac11deb1c18163928c3e5028419b4356e620d04ba5440&w=1380")'};
         // Show the welcome page initially
         function startChat() {
             document.getElementById('welcome-page').style.display = 'none';
@@ -245,6 +257,17 @@
                     document.getElementById('chat-window').scrollTop = document.getElementById('chat-window').scrollHeight;
                 }, 1000);
             }
+        }
+
+        // End Chat functionality
+        function endChat() {
+            document.getElementById('chat-container').style.display = 'none';
+            document.getElementById('welcome-page').style.display = 'flex';
+        }
+
+        // Go to Visualizations page
+        function goToVisualizations() {
+            window.location.href = "https://www.example.com/visualizations"; // Replace with the actual link
         }
     </script>
 </body>
