@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+	#wrapper {
+	    display: flex;
+	    width: 900px;
+	    height: 90vh;
+	    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	    border-radius: 8px;
+	    overflow: hidden;
+	    background-color: white;
+	}
+        #chat-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        #messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px 15px;
+            background-color: #fafafa;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        .user {
+            align-self: flex-end;
+            background-color: #ffd700;
+            color: black;
+            text-align: right;
+            margin-right: 10px;
+        }
+        .bot {
+            align-self: flex-start;
+            background-color: #e9e9e9;
+            color: black;
+            margin-left: 10px;
+        }
+        #input-container {
+            display: flex;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+        #input-container input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+            outline: none;
+        }
+        #input-container button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+	#sidebar {
+	    width: 250px;
+	    height: 100%;
+	    background-color: #f7f7f7;
+	    padding: 15px;
+	    overflow-y: auto;
+	    border-right: 1px solid #ddd;
+	    box-sizing: border-box;
+	    flex-shrink: 0;
+	}
+
+        #sidebar h3 {
+            margin-top: 0;
+            font-size: 1.2em;
+            color: #333;
+        }
+        #sidebar label {
+            display: block;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        #sidebar input {
+            margin-right: 5px;
+        }
+        #visualization-btn {
+            display: block;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        #end-chat-btn {
+            background-color: #dc3545;
+            color: white;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <h3>Topics</h3>
+        <div id="topics">
+            <label><input type="checkbox" value="Health"> Health</label>
+            <label><input type="checkbox" value="Environment"> Environment</label>
+            <label><input type="checkbox" value="Technology"> Technology</label>
+            <label><input type="checkbox" value="Economy"> Economy</label>
+            <label><input type="checkbox" value="Entertainment"> Entertainment</label>
+            <label><input type="checkbox" value="Sports"> Sports</label>
+            <label><input type="checkbox" value="Politics"> Politics</label>
+            <label><input type="checkbox" value="Education"> Education</label>
+            <label><input type="checkbox" value="Travel"> Travel</label>
+            <label><input type="checkbox" value="Food"> Food</label>
+	    <label><input type="checkbox" value="chitchat"> chitchat</label>
+        </div>
+        <button id="visualization-btn">Go to Visualizations</button>
+        <button id="end-chat-btn">End Chat</button>
+    </div>
+    <!-- Chat Container -->
+    <div id="chat-container">
+        <div id="messages">
+            <!-- Chat messages appear here -->
+        </div>
+        <div id="input-container">
+            <input id="user-input" type="text" placeholder="Type your message..." onkeyup="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const selectedTopics = [];
+
+    document.querySelectorAll('#topics input').forEach(checkbox => {
+        checkbox.addEventListener('change', (event) => {
+            if (event.target.checked) {
+                selectedTopics.push(event.target.value);
+            } else {
+                const index = selectedTopics.indexOf(event.target.value);
+                if (index > -1) {
+                    selectedTopics.splice(index, 1);
+                }
+            }
+        });
+    });
+
+    async function sendMessage() {
+        const inputField = document.getElementById("user-input");
+        const message = inputField.value.trim();
+        if (!message) return;
+
+        displayMessage(message, "user");
+        inputField.value = "";
+
+        const leavingRemarks = ["bye", "goodbye", "exit", "see you", "later", "quit"];
+        if (leavingRemarks.some(remark => message.toLowerCase().includes(remark))) {
+            displayMessage("Goodbye! Have a great day!", "bot");
+            inputField.disabled = true;
+            return;
+        }
+
+        try {
+            const payload = {
+                query: message,
+                topics: selectedTopics.length > 0 ? selectedTopics : null,
+            };
+
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+            if (data.error) {
+                displayMessage(`Error: ${data.error}`, "bot");
+            } else {
+                displayMessage(data.response, "bot");
+            }
+        } catch (error) {
+            displayMessage("Failed to connect to the server. Please try again.", "bot");
+        }
+    }
+
+    function displayMessage(message, sender) {
+        const messagesContainer = document.getElementById("messages");
+        const messageElement = document.createElement("div");
+        messageElement.className = `message ${sender}`;
+        messageElement.innerHTML = sender === "bot"
+            ? message.replace(/\n/g, "<br>").replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+            : message;
+
+        messagesContainer.appendChild(messageElement);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    document.getElementById("end-chat-btn").addEventListener("click", () => {
+        if (confirm("Are you sure you want to end the chat?")) {
+            displayMessage("Chat ended.", "bot");
+            document.getElementById("user-input").disabled = true;
+        }
+    });
+
+    document.getElementById("visualization-btn").addEventListener("click", () => {
+        window.open("/visualization", "_blank");
+    });
+</script>
+</body>
+</html>
