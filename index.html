@@ -16,16 +16,25 @@
             transition: background 1s ease-in-out; /* Smooth background transition */
         }
 
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            position: relative;
+        }
+
         .chat-container {
+            flex: 1;
             display: flex;
             flex-direction: column;
             height: 80vh;
-            margin: 20px;
+            margin: 0 20px;
             border: 2px solid #007BFF;
             border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.9); /* Subtle overlay for contrast */
+            background-color: rgba(255, 255, 255, 0.9);
             overflow: hidden;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            padding-top: 50px; /* Leave space for the topic container */
         }
 
         .chat-window {
@@ -41,7 +50,7 @@
             margin-bottom: 10px;
         }
 
-        .bot-side {
+        .user-side {
             margin-left: auto;
             background-color: #d0e7ff;
             padding: 10px;
@@ -49,7 +58,7 @@
             max-width: 70%;
         }
 
-        .user-side {
+        .bot-side {
             margin-right: auto;
             background-color: #f3d9f5;
             padding: 10px;
@@ -86,14 +95,11 @@
         }
 
         .topic-container {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+            width: 250px;
             background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent box */
             border: 1px solid #007BFF;
             padding: 15px;
             border-radius: 10px;
-            width: 220px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             font-size: 16px;
         }
@@ -115,7 +121,7 @@
             align-items: center;
             height: 100vh;
             text-align: center;
-            background: url('https://www.example.com/welcome.jpg') no-repeat center center fixed; /* Welcome background */
+            background: url('https://www.example.com/welcome.jpg') no-repeat center center fixed;
             background-size: cover;
             transition: opacity 1s ease-in-out;
         }
@@ -139,51 +145,51 @@
     </div>
 
     <!-- Chat Container -->
-    <div class="chat-container" id="chat-container" style="display: none;">
-        <!-- Chat window displaying messages -->
-        <div class="chat-window" id="chat-window"></div>
+    <div class="container" id="chat-container" style="display: none;">
+        <div class="chat-container">
+            <div class="chat-window" id="chat-window"></div>
 
-        <!-- User input field -->
-        <div class="input-container">
-            <input type="text" id="user-input" placeholder="Type your message...">
-            <button onclick="sendMessage()">Send</button>
+            <div class="input-container">
+                <input type="text" id="user-input" placeholder="Type your message...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
         </div>
-    </div>
 
-    <!-- Topic Selection -->
-    <div class="topic-container">
-        <h5>Select Topics</h5>
+        <!-- Topic Selection -->
+        <div class="topic-container">
+            <h5>Select Topics</h5>
 
-        <label>
-            <input type="checkbox" name="topic" value="Health"> Health
-        </label><br>
-        <label>
-            <input type="checkbox" name="topic" value="Environment"> Environment
-        </label><br>
-        <label>
-            <input type="checkbox" name="topic" value="Technology"> Technology
-        </label><br>
-        <label>
-            <input type="checkbox" name="topic" value="Economics"> Economics
-        </label><br>
-        <label>
-            <input type="checkbox" name="topic" value="Politics"> Politics
-        </label><br>
-        <label>
-            <input type="checkbox" name="topic" value="Entertainment"> Entertainment
-        </label><br>
-        <label>
-            <input type="checkbox" name="topic" value="Sports"> Sports
-        </label><br>
-        <label>
-            <input type="checkbox" name="topic" value="Education"> Education
-        </label><br>
-        <label>
-            <input type="checkbox" name="topic" value="Travel"> Travel
-        </label><br>
-        <label>
-            <input type="checkbox" name="topic" value="Food"> Food
-        </label>
+            <label>
+                <input type="checkbox" name="topic" value="Health"> Health
+            </label><br>
+            <label>
+                <input type="checkbox" name="topic" value="Environment"> Environment
+            </label><br>
+            <label>
+                <input type="checkbox" name="topic" value="Technology"> Technology
+            </label><br>
+            <label>
+                <input type="checkbox" name="topic" value="Economics"> Economics
+            </label><br>
+            <label>
+                <input type="checkbox" name="topic" value="Politics"> Politics
+            </label><br>
+            <label>
+                <input type="checkbox" name="topic" value="Entertainment"> Entertainment
+            </label><br>
+            <label>
+                <input type="checkbox" name="topic" value="Sports"> Sports
+            </label><br>
+            <label>
+                <input type="checkbox" name="topic" value="Education"> Education
+            </label><br>
+            <label>
+                <input type="checkbox" name="topic" value="Travel"> Travel
+            </label><br>
+            <label>
+                <input type="checkbox" name="topic" value="Food"> Food
+            </label>
+        </div>
     </div>
 
     <script>
@@ -198,51 +204,48 @@
             Sports: 'url("https://img.freepik.com/free-photo/sports-tools_53876-138077.jpg?t=st=1733512954~exp=1733516554~hmac=551ca13a68136027e41e121d39c57c9dbd7442e81983214acc817ee6b1283ae5&w=996")',
             Education: 'url("https://img.freepik.com/free-photo/top-view-books-with-copy-space_23-2148827187.jpg?t=st=1733512987~exp=1733516587~hmac=289d7c4c4eb6769dcdd82d46de2d12a1183fc2d20b30258ff3af209f0db9ab06&w=1060")',
             Travel: 'url("https://img.freepik.com/free-photo/composition-small-airplanes-bus-passport-map_23-2148169874.jpg?t=st=1733513023~exp=1733516623~hmac=34ba08e23f8440779a1d1282cbb7b0a0bc56b1c050f2929ed614ddf04361eed7&w=996")',
-            Food: 'url("https://img.freepik.com/free-photo/copy-space-italian-food-ingredients_23-2148551732.jpg?t=st=1733512492~exp=1733516092~hmac=74cdf3fc86d27cebee8ac11deb1c18163928c3e5028419b4356e620d04ba5440&w=1380")',
- 
-        };
+            Food: 'url("https://img.freepik.com/free-photo/copy-space-italian-food-ingredients_23-2148551732.jpg?t=st=1733512492~exp=1733516092~hmac=74cdf3fc86d27cebee8ac11deb1c18163928c3e5028419b4356e620d04ba5440&w=1380")' };
 
-        // Start Chat Function
+        // Show the welcome page initially
         function startChat() {
             document.getElementById('welcome-page').style.display = 'none';
             document.getElementById('chat-container').style.display = 'flex';
         }
 
-        // Function to handle sending a message and updating the chat window
-        function sendMessage() {
-            const userInput = document.getElementById('user-input').value;
-            if (userInput.trim() === "") return;
-
-            const chatWindow = document.getElementById('chat-window');
-
-            // Add user message to chat window
-            const userMessage = document.createElement('div');
-            userMessage.classList.add('chat-message', 'user-side');
-            userMessage.innerText = userInput;
-            chatWindow.appendChild(userMessage);
-
-            // Add bot response (placeholder response)
-            const botResponse = document.createElement('div');
-            botResponse.classList.add('chat-message', 'bot-side');
-            botResponse.innerText = "Bot Response: " + userInput;
-            chatWindow.appendChild(botResponse);
-
-            // Scroll chat window to the bottom
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-
-            // Clear user input field
-            document.getElementById('user-input').value = "";
-        }
-
-        // Update background based on topic selection
-        document.querySelectorAll('.topic-container input').forEach((radio) => {
-            radio.addEventListener('change', () => {
-                const selectedTopic = document.querySelector('.topic-container input:checked').value;
-
-                // Update background
-                document.body.style.backgroundImage = topics[selectedTopic];
+        // Change the background when a topic is selected
+        const topicCheckboxes = document.querySelectorAll('input[name="topic"]');
+        topicCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const selectedTopics = [...document.querySelectorAll('input[name="topic"]:checked')]
+                    .map(checkbox => checkbox.value);
+                let backgroundUrl = topics['All']; // Default background
+                if (selectedTopics.length > 0) {
+                    backgroundUrl = topics[selectedTopics[selectedTopics.length - 1]];
+                }
+                document.body.style.backgroundImage = backgroundUrl;
             });
         });
+
+        // Handle sending a message
+        function sendMessage() {
+            const userInput = document.getElementById('user-input').value;
+            if (userInput) {
+                const messageContainer = document.createElement('div');
+                messageContainer.classList.add('chat-message', 'bot-side'); // Swap to bot-side
+                messageContainer.innerText = userInput;
+                document.getElementById('chat-window').appendChild(messageContainer);
+                document.getElementById('user-input').value = '';
+
+                // Simulate a bot reply
+                setTimeout(() => {
+                    const botMessage = document.createElement('div');
+                    botMessage.classList.add('chat-message', 'user-side'); // Swap to user-side
+                    botMessage.innerText = 'Bot: ' + userInput;
+                    document.getElementById('chat-window').appendChild(botMessage);
+                    document.getElementById('chat-window').scrollTop = document.getElementById('chat-window').scrollHeight;
+                }, 1000);
+            }
+        }
     </script>
 </body>
 </html>
