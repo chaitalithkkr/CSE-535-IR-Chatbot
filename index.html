@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://www.example.com/general.jpg') no-repeat center center fixed; /* Default backdrop */
+            background-size: cover;
+            position: relative;
+            transition: background 1s ease-in-out; /* Smooth background transition */
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+            margin: 20px;
+            border: 2px solid #007BFF;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.9); /* Subtle overlay for contrast */
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-window {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .bot-side {
+            margin-left: auto;
+            background-color: #d0e7ff;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 70%;
+        }
+
+        .user-side {
+            margin-right: auto;
+            background-color: #f3d9f5;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 70%;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-top: 2px solid #007BFF;
+        }
+
+        .input-container input {
+            flex-grow: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .input-container button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .input-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .topic-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent box */
+            border: 1px solid #007BFF;
+            padding: 15px;
+            border-radius: 10px;
+            width: 220px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+        }
+
+        .topic-container label {
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .topic-container h5 {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .welcome-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            background: url('https://www.example.com/welcome.jpg') no-repeat center center fixed; /* Welcome background */
+            background-size: cover;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .welcome-content {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Page -->
+    <div class="welcome-page" id="welcome-page">
+        <div class="welcome-content">
+            <h1>Welcome to the AI Chatbot</h1>
+            <p>Your gateway to exploring knowledge across various topics!</p>
+            <button class="btn btn-primary" onclick="startChat()">Start Chatting</button>
+        </div>
+    </div>
+
+    <!-- Chat Container -->
+    <div class="chat-container" id="chat-container" style="display: none;">
+        <!-- Chat window displaying messages -->
+        <div class="chat-window" id="chat-window"></div>
+
+        <!-- User input field -->
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- Topic Selection -->
+    <div class="topic-container">
+        <h5>Select Topics</h5>
+
+        <label>
+            <input type="checkbox" name="topic" value="Health"> Health
+        </label><br>
+        <label>
+            <input type="checkbox" name="topic" value="Environment"> Environment
+        </label><br>
+        <label>
+            <input type="checkbox" name="topic" value="Technology"> Technology
+        </label><br>
+        <label>
+            <input type="checkbox" name="topic" value="Economics"> Economics
+        </label><br>
+        <label>
+            <input type="checkbox" name="topic" value="Politics"> Politics
+        </label><br>
+        <label>
+            <input type="checkbox" name="topic" value="Entertainment"> Entertainment
+        </label><br>
+        <label>
+            <input type="checkbox" name="topic" value="Sports"> Sports
+        </label><br>
+        <label>
+            <input type="checkbox" name="topic" value="Education"> Education
+        </label><br>
+        <label>
+            <input type="checkbox" name="topic" value="Travel"> Travel
+        </label><br>
+        <label>
+            <input type="checkbox" name="topic" value="Food"> Food
+        </label>
+    </div>
+
+    <script>
+        const topics = {
+            All: 'url("https://www.example.com/general.jpg")',
+            Health: 'url("https://img.freepik.com/free-vector/clean-medical-background_53876-97927.jpg?t=st=1733512646~exp=1733516246~hmac=53c08b1601aebf79de837640e723cfb9a7a3a57f3e08b5b32874e625ef7e0181&w=996")',
+            Environment: 'url("https://img.freepik.com/free-photo/top-view-paper-dove-leaves-with-copy-space_23-2148630319.jpg?t=st=1733512697~exp=1733516297~hmac=2ea80617b0e5195ac681d2d7455505f8def3ee6f697238a97254b674b978d45d&w=1060")',
+            Technology: 'url("https://img.freepik.com/free-vector/gradient-abstract-background_23-2149460640.jpg?t=st=1733512758~exp=1733516358~hmac=177876d4d5ffec68b7dd792652bb6bd08088133bc048e1422e9271532b922d71&w=996")',
+            Economics: 'url("https://img.freepik.com/free-vector/gradient-stock-market-concept_23-2149166929.jpg?t=st=1733512803~exp=1733516403~hmac=4435d19bce45651e50641a568469ad44d512fbdad339bb2ec9363b2244c759de&w=996")',
+            Politics: 'url("https://img.freepik.com/premium-vector/colorful-flags-garland-different-countries-europe-world-with-confetti-festive-garlands-international-pennant-bunting-wreaths-banner-celebration-party-conference_302982-248.jpg?w=996")',
+            Entertainment: 'url("https://img.freepik.com/premium-photo/glowing-neon-lines-tunnel-3d-rendering_778569-3583.jpg?w=996")',
+            Sports: 'url("https://img.freepik.com/free-photo/sports-tools_53876-138077.jpg?t=st=1733512954~exp=1733516554~hmac=551ca13a68136027e41e121d39c57c9dbd7442e81983214acc817ee6b1283ae5&w=996")',
+            Education: 'url("https://img.freepik.com/free-photo/top-view-books-with-copy-space_23-2148827187.jpg?t=st=1733512987~exp=1733516587~hmac=289d7c4c4eb6769dcdd82d46de2d12a1183fc2d20b30258ff3af209f0db9ab06&w=1060")',
+            Travel: 'url("https://img.freepik.com/free-photo/composition-small-airplanes-bus-passport-map_23-2148169874.jpg?t=st=1733513023~exp=1733516623~hmac=34ba08e23f8440779a1d1282cbb7b0a0bc56b1c050f2929ed614ddf04361eed7&w=996")',
+            Food: 'url("https://img.freepik.com/free-photo/copy-space-italian-food-ingredients_23-2148551732.jpg?t=st=1733512492~exp=1733516092~hmac=74cdf3fc86d27cebee8ac11deb1c18163928c3e5028419b4356e620d04ba5440&w=1380")',
+ 
+        };
+
+        // Start Chat Function
+        function startChat() {
+            document.getElementById('welcome-page').style.display = 'none';
+            document.getElementById('chat-container').style.display = 'flex';
+        }
+
+        // Function to handle sending a message and updating the chat window
+        function sendMessage() {
+            const userInput = document.getElementById('user-input').value;
+            if (userInput.trim() === "") return;
+
+            const chatWindow = document.getElementById('chat-window');
+
+            // Add user message to chat window
+            const userMessage = document.createElement('div');
+            userMessage.classList.add('chat-message', 'user-side');
+            userMessage.innerText = userInput;
+            chatWindow.appendChild(userMessage);
+
+            // Add bot response (placeholder response)
+            const botResponse = document.createElement('div');
+            botResponse.classList.add('chat-message', 'bot-side');
+            botResponse.innerText = "Bot Response: " + userInput;
+            chatWindow.appendChild(botResponse);
+
+            // Scroll chat window to the bottom
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+
+            // Clear user input field
+            document.getElementById('user-input').value = "";
+        }
+
+        // Update background based on topic selection
+        document.querySelectorAll('.topic-container input').forEach((radio) => {
+            radio.addEventListener('change', () => {
+                const selectedTopic = document.querySelector('.topic-container input:checked').value;
+
+                // Update background
+                document.body.style.backgroundImage = topics[selectedTopic];
+            });
+        });
+    </script>
+</body>
+</html>
